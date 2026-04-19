@@ -3,7 +3,11 @@
   "routes": [
     { "src": "/", "dest": "/index.html" },
     { "src": "/media", "dest": "/media.html" },
+    { "src": "/media.html", "dest": "/media.html" },
     { "src": "/skylens", "dest": "/skylens.html" },
-    { "src": "/(.*)", "dest": "/$1" }
+    { "src": "/skylens.html", "dest": "/skylens.html" },
+    { "src": "/guide", "dest": "/guide.html" },
+    { "src": "/(.*)\\.html", "dest": "/$1.html" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
