@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1000,
         system: 'Tu es l assistant IA du Media Intelligent. Tu es expert en information mondiale, geopolitique, economie, technologie et OSINT. Tu analyses l actualite de facon factuelle et neutre. Tu luttes contre la desinformation. Tu reponds en moins de 150 mots, de maniere claire et directe. Tu reponds toujours dans la langue de l utilisateur.',
         messages: [{ role: 'user', content: message }]
