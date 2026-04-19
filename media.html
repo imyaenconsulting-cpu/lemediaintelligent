@@ -1268,7 +1268,7 @@ async function sendAiMessage() {
       body: JSON.stringify({ message: msg })
     });
     const data = await response.json();
-    const reply = data.content?.[0]?.text || "Je traite votre demande...";
+    const reply = data.reply || "Je traite votre demande...";
     document.getElementById('aiThinking').style.display = 'none';
     chat.innerHTML += `<div class="ai-msg bot">${reply}</div>`;
   } catch(e) {
