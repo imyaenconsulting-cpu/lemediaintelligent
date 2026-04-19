@@ -1,12 +1,12 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/media", "dest": "/media.html" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/media.html", "dest": "/media.html" },
-    { "src": "/skylens", "dest": "/skylens.html" },
     { "src": "/skylens.html", "dest": "/skylens.html" },
-    { "src": "/guide", "dest": "/guide.html" },
+    { "src": "/guide.html", "dest": "/guide.html" },
+    { "src": "/guide_deploy.html", "dest": "/guide_deploy.html" },
+    { "src": "/", "dest": "/index.html" },
     { "src": "/(.*)\\.html", "dest": "/$1.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
