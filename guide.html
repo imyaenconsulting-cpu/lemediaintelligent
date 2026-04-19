@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide de Déploiement — Le Média Intelligent + SkyLens</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080810; --deep: #0d0d1a; --card: #111120;
+  --border: rgba(255,255,255,0.07); --white: #f0f0f8;
+  --dim: rgba(240,240,248,0.55); --cyan: #00e5ff;
+  --gold: #ffd666; --red: #ff4757; --green: #00ff88;
+  --purple: #7c3aed;
+  --font: 'Syne', sans-serif; --mono: 'IBM Plex Mono', monospace;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--black); color:var(--white); font-family:var(--font); line-height:1.7; }
+.container { max-width:860px; margin:0 auto; padding:60px 24px; }
+.header { text-align:center; margin-bottom:64px; padding-bottom:48px; border-bottom:1px solid var(--border); }
+.header-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.2); border-radius:100px; padding:6px 16px; font-size:12px; font-family:var(--mono); color:var(--cyan); margin-bottom:24px; }
+h1 { font-size:40px; font-weight:800; letter-spacing:-0.03em; margin-bottom:16px; line-height:1.1; }
+.header-sub { font-size:16px; color:var(--dim); max-width:500px; margin:0 auto; }
+
+/* PROGRESS */
+.progress-bar { display:flex; gap:0; margin:48px 0; background:var(--deep); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.progress-step { flex:1; padding:14px 12px; text-align:center; font-size:11px; font-family:var(--mono); color:var(--dim); cursor:pointer; transition:all 0.2s; border-right:1px solid var(--border); }
+.progress-step:last-child { border-right:none; }
+.progress-step.done { background:rgba(0,255,136,0.08); color:var(--green); }
+.progress-step.active { background:rgba(0,229,255,0.1); color:var(--cyan); font-weight:600; }
+.progress-num { font-size:18px; font-weight:800; display:block; margin-bottom:4px; }
+
+/* STEPS */
+.step { margin-bottom:48px; }
+.step-header { display:flex; align-items:flex-start; gap:16px; margin-bottom:24px; }
+.step-num { width:48px; height:48px; border-radius:12px; background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); color:var(--cyan); font-size:20px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:var(--mono); }
+.step-info { flex:1; }
+.step-title { font-size:22px; font-weight:800; letter-spacing:-0.02em; margin-bottom:4px; }
+.step-desc { font-size:14px; color:var(--dim); }
+.step-time { font-size:11px; font-family:var(--mono); color:var(--cyan); background:rgba(0,229,255,0.08); padding:2px 8px; border-radius:4px; display:inline-block; margin-top:6px; }
+
+.step-body { margin-left:64px; }
+.substep { display:flex; align-items:flex-start; gap:12px; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:10px; }
+.substep-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.substep-text { flex:1; font-size:14px; color:var(--dim); line-height:1.6; }
+.substep-text strong { color:var(--white); display:block; margin-bottom:4px; font-size:15px; }
+
+.code-block { background:var(--deep); border:1px solid var(--border); border-radius:8px; padding:16px; font-family:var(--mono); font-size:12px; color:var(--cyan); margin:12px 0; position:relative; overflow-x:auto; }
+.code-block .copy-btn { position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.1); border:none; color:var(--dim); padding:4px 10px; border-radius:4px; font-size:11px; cursor:pointer; font-family:var(--font); transition:all 0.2s; }
+.code-block .copy-btn:hover { color:var(--white); background:rgba(255,255,255,0.2); }
+
+.tip { background:rgba(255,214,102,0.06); border:1px solid rgba(255,214,102,0.2); border-radius:8px; padding:14px 16px; font-size:13px; color:rgba(255,214,102,0.9); display:flex; gap:10px; margin:12px 0; }
+.tip-icon { flex-shrink:0; }
+.warning { background:rgba(255,71,87,0.06); border:1px solid rgba(255,71,87,0.2); border-radius:8px; padding:14px 16px; font-size:13px; color:rgba(255,100,120,0.9); display:flex; gap:10px; margin:12px 0; }
+.success { background:rgba(0,255,136,0.06); border:1px solid rgba(0,255,136,0.2); border-radius:8px; padding:14px 16px; font-size:13px; color:rgba(0,255,136,0.9); display:flex; gap:10px; margin:12px 0; }
+
+.divider { border:none; border-top:1px solid var(--border); margin:48px 0; }
+
+/* SUPPORT */
+.support-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px; }
+.support-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+.support-card-title { font-size:14px; font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+.support-problem { font-size:13px; color:var(--dim); margin-bottom:8px; line-height:1.5; }
+.support-solution { font-size:13px; color:var(--green); display:flex; gap:6px; }
+
+.cost-table { width:100%; border-collapse:collapse; margin:20px 0; }
+.cost-table th { text-align:left; padding:10px 14px; font-size:12px; font-family:var(--mono); color:var(--dim); border-bottom:1px solid var(--border); text-transform:uppercase; letter-spacing:0.08em; }
+.cost-table td { padding:12px 14px; font-size:13px; border-bottom:1px solid var(--border); }
+.cost-table tr:last-child td { border-bottom:none; }
+.cost-free { color:var(--green); font-weight:700; }
+.cost-paid { color:var(--gold); font-weight:700; }
+
+@media (max-width:700px) { .step-body { margin-left:0; } .support-grid { grid-template-columns:1fr; } .progress-bar { flex-wrap:wrap; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div class="header-badge">📖 GUIDE COMPLET · DÉPLOIEMENT · NOVICE</div>
+  <h1>Déployer Le Média Intelligent + SkyLens</h1>
+  <p class="header-sub">Guide étape par étape. Aucune connaissance technique requise. Durée totale estimée : 2h à 3h.</p>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-step active"><span class="progress-num">1</span>Fichiers</div>
+  <div class="progress-step"><span class="progress-num">2</span>GitHub</div>
+  <div class="progress-step"><span class="progress-num">3</span>Vercel</div>
+  <div class="progress-step"><span class="progress-num">4</span>Domaine</div>
+  <div class="progress-step"><span class="progress-num">5</span>Supabase</div>
+  <div class="progress-step"><span class="progress-num">6</span>APIs</div>
+  <div class="progress-step"><span class="progress-num">7</span>Paiements</div>
+  <div class="progress-step"><span class="progress-num">8</span>Go Live</div>
+</div>
+
+<!-- ÉTAPE 0 : AVANT DE COMMENCER -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">0</div>
+    <div class="step-info">
+      <div class="step-title">Avant de commencer — Ce dont vous avez besoin</div>
+      <div class="step-desc">Préparez ces éléments avant de démarrer.</div>
+      <span class="step-time">⏱ 15 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <table class="cost-table">
+      <tr><th>Élément</th><th>Où le créer</th><th>Coût</th></tr>
+      <tr><td>Compte Google (Gmail)</td><td>gmail.com</td><td class="cost-free">Gratuit</td></tr>
+      <tr><td>Compte GitHub</td><td>github.com</td><td class="cost-free">Gratuit</td></tr>
+      <tr><td>Compte Vercel</td><td>vercel.com</td><td class="cost-free">Gratuit</td></tr>
+      <tr><td>Compte Supabase</td><td>supabase.com</td><td class="cost-free">Gratuit</td></tr>
+      <tr><td>Clé API Anthropic (Claude)</td><td>console.anthropic.com</td><td class="cost-paid">~5€/mois selon usage</td></tr>
+      <tr><td>Compte Stripe</td><td>stripe.com</td><td class="cost-free">Gratuit + % transaction</td></tr>
+      <tr><td>Nom de domaine</td><td>namecheap.com ou ovh.com</td><td class="cost-paid">~12€/an</td></tr>
+      <tr><td>Compte Resend (emails)</td><td>resend.com</td><td class="cost-free">Gratuit jusqu'à 3000/mois</td></tr>
+    </table>
+    <div class="tip"><span class="tip-icon">💡</span><span><strong>Conseil :</strong> Utilisez le même compte Google pour tout. Ça simplifie la gestion. Créez une adresse email dédiée type <em>admin@lemediaintelligent.com</em> une fois le domaine acheté.</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 1 : FICHIERS -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">1</div>
+    <div class="step-info">
+      <div class="step-title">Organiser vos fichiers</div>
+      <div class="step-desc">Créer la structure de votre projet sur votre ordinateur.</div>
+      <span class="step-time">⏱ 10 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">📁</span>
+      <div class="substep-text">
+        <strong>Créer un dossier sur votre bureau</strong>
+        Nommez-le <em>lemediaintelligent</em>. Mettez-y tous les fichiers HTML reçus (index.html, media.html, skylens.html, guide.html).
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">📄</span>
+      <div class="substep-text">
+        <strong>Vérifier que vous avez ces 4 fichiers</strong>
+        index.html (page d'accueil), media.html (le média), skylens.html (globe 3D), guide.html (ce guide).
+      </div>
+    </div>
+    <div class="success"><span>✓</span><span>Vos fichiers sont prêts. Passez à l'étape 2.</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 2 : GITHUB -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">2</div>
+    <div class="step-info">
+      <div class="step-title">Créer votre dépôt GitHub</div>
+      <div class="step-desc">GitHub stocke votre code et permet le déploiement automatique.</div>
+      <span class="step-time">⏱ 15 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">1️⃣</span>
+      <div class="substep-text">
+        <strong>Aller sur github.com</strong>
+        Créez un compte avec votre email Google. Confirmez votre email.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">2️⃣</span>
+      <div class="substep-text">
+        <strong>Cliquez sur "New repository" (bouton vert)</strong>
+        Nommez-le <em>lemediaintelligent</em>. Choisissez "Public". Cochez "Add a README file". Cliquez "Create repository".
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">3️⃣</span>
+      <div class="substep-text">
+        <strong>Uploader vos fichiers</strong>
+        Dans votre dépôt, cliquez "Add file" → "Upload files". Glissez tous vos fichiers HTML. Cliquez "Commit changes".
+      </div>
+    </div>
+    <div class="tip"><span class="tip-icon">💡</span><span>Une fois vos fichiers uploadés, vous devriez les voir listés dans votre dépôt GitHub. C'est votre code en ligne !</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 3 : VERCEL -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">3</div>
+    <div class="step-info">
+      <div class="step-title">Déployer sur Vercel</div>
+      <div class="step-desc">Vercel met votre site en ligne en 1 clic. Gratuit et ultra-rapide.</div>
+      <span class="step-time">⏱ 10 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">1️⃣</span>
+      <div class="substep-text">
+        <strong>Aller sur vercel.com</strong>
+        Cliquez "Sign Up". Choisissez "Continue with GitHub". Autorisez l'accès.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">2️⃣</span>
+      <div class="substep-text">
+        <strong>Importer votre projet</strong>
+        Cliquez "New Project". Trouvez "lemediaintelligent" dans la liste. Cliquez "Import".
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">3️⃣</span>
+      <div class="substep-text">
+        <strong>Configurer et déployer</strong>
+        Ne changez rien. Cliquez directement "Deploy". Attendez 1-2 minutes.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">4️⃣</span>
+      <div class="substep-text">
+        <strong>Votre site est en ligne !</strong>
+        Vercel vous donne une URL type <em>lemediaintelligent.vercel.app</em>. Cliquez dessus pour voir votre site.
+      </div>
+    </div>
+    <div class="success"><span>🚀</span><span>Félicitations ! Votre site est accessible dans le monde entier. Désormais, chaque modification sur GitHub se déploie automatiquement.</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 4 : DOMAINE -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">4</div>
+    <div class="step-info">
+      <div class="step-title">Connecter votre nom de domaine</div>
+      <div class="step-desc">Remplacer l'URL Vercel par votre propre domaine professionnel.</div>
+      <span class="step-time">⏱ 30 minutes (+ 24h propagation DNS)</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">1️⃣</span>
+      <div class="substep-text">
+        <strong>Acheter votre domaine sur namecheap.com</strong>
+        Cherchez "lemediaintelligent.com". Si disponible (~12€/an), achetez-le. Sinon essayez .fr, .media, ou .info.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">2️⃣</span>
+      <div class="substep-text">
+        <strong>Dans Vercel : Settings → Domains</strong>
+        Cliquez "Add Domain". Tapez votre domaine. Vercel vous donne des valeurs DNS à copier.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">3️⃣</span>
+      <div class="substep-text">
+        <strong>Dans Namecheap : Advanced DNS</strong>
+        Ajoutez les enregistrements DNS que Vercel vous a donnés. Attendez 24h maximum.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">4️⃣</span>
+      <div class="substep-text">
+        <strong>Créer les sous-domaines</strong>
+        Dans Vercel, ajoutez aussi : <em>media.votre-domaine.com</em> et <em>skylens.votre-domaine.com</em>
+      </div>
+    </div>
+    <div class="tip"><span class="tip-icon">💡</span><span>Vercel gère le HTTPS automatiquement. Votre site sera sécurisé (cadenas vert) sans rien faire de plus.</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 5 : SUPABASE -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">5</div>
+    <div class="step-info">
+      <div class="step-title">Configurer Supabase (base de données)</div>
+      <div class="step-desc">Supabase stocke vos utilisateurs, articles et données. Gratuit jusqu'à 50 000 utilisateurs.</div>
+      <span class="step-time">⏱ 20 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">1️⃣</span>
+      <div class="substep-text">
+        <strong>Créer un compte sur supabase.com</strong>
+        "Start your project". Connectez avec GitHub. Créez un "New Project". Notez votre mot de passe de base de données.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">2️⃣</span>
+      <div class="substep-text">
+        <strong>Activer l'authentification Google</strong>
+        Dans votre projet Supabase → Authentication → Providers → Google. Activez-le. Copiez les URLs de redirection.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">3️⃣</span>
+      <div class="substep-text">
+        <strong>Récupérer vos clés API Supabase</strong>
+        Settings → API. Copiez l'URL du projet et la clé "anon public". Vous en aurez besoin à l'étape 6.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">4️⃣</span>
+      <div class="substep-text">
+        <strong>Configurer votre email admin</strong>
+        Dans Supabase → SQL Editor, collez et exécutez cette requête pour créer les tables :
+      </div>
+    </div>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+-- Créer les tables principales
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE,
+  plan TEXT DEFAULT 'free',
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE articles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT,
+  content TEXT,
+  category TEXT,
+  fact_score INTEGER,
+  ai_generated BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE fake_news_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT,
+  severity TEXT,
+  reach_count INTEGER,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE user_preferences (
+  user_id UUID REFERENCES users(id),
+  topics TEXT[],
+  format TEXT DEFAULT 'text',
+  language TEXT DEFAULT 'fr'
+);
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 6 : APIS -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">6</div>
+    <div class="step-info">
+      <div class="step-title">Configurer les clés API</div>
+      <div class="step-desc">Connecter Claude AI, les données de trafic et les emails.</div>
+      <span class="step-time">⏱ 25 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">🤖</span>
+      <div class="substep-text">
+        <strong>Clé API Claude (Anthropic)</strong>
+        Allez sur console.anthropic.com. Créez un compte. "API Keys" → "Create Key". Copiez la clé (commence par sk-ant-...).
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">✈️</span>
+      <div class="substep-text">
+        <strong>OpenSky Network (données avions) — GRATUIT</strong>
+        Créez un compte sur opensky-network.org. Allez dans "My OpenSky" → "API Credentials". Notez votre username et mot de passe.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">📧</span>
+      <div class="substep-text">
+        <strong>Resend (emails automatiques) — GRATUIT</strong>
+        Créez un compte sur resend.com. "API Keys" → "Create API Key". Copiez la clé.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">🔐</span>
+      <div class="substep-text">
+        <strong>Ajouter les clés dans Vercel (IMPORTANT : jamais dans le code !)</strong>
+        Dans Vercel → votre projet → Settings → Environment Variables. Ajoutez une par une :
+      </div>
+    </div>
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyCode(this)">Copier</button>
+ANTHROPIC_API_KEY = sk-ant-votre-clé-ici
+SUPABASE_URL = https://votre-projet.supabase.co
+SUPABASE_ANON_KEY = votre-clé-anon-supabase
+OPENSKY_USERNAME = votre-username-opensky
+OPENSKY_PASSWORD = votre-mot-de-passe-opensky
+RESEND_API_KEY = re_votre-clé-resend
+ADMIN_EMAIL = votre-email@gmail.com
+NEXT_PUBLIC_STRIPE_KEY = pk_live_votre-clé-stripe
+    </div>
+    <div class="warning"><span>⚠️</span><span>Ne partagez JAMAIS ces clés avec personne. Ne les mettez jamais dans un fichier HTML. Seul Vercel les stocke en sécurité.</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 7 : STRIPE -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">7</div>
+    <div class="step-info">
+      <div class="step-title">Configurer les paiements Stripe</div>
+      <div class="step-desc">Recevoir les paiements Premium et Pro automatiquement.</div>
+      <span class="step-time">⏱ 30 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">1️⃣</span>
+      <div class="substep-text">
+        <strong>Créer un compte Stripe sur stripe.com</strong>
+        Remplissez toutes les informations de votre entreprise (ou en tant que particulier). Vérifiez votre identité (obligatoire pour recevoir des paiements).
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">2️⃣</span>
+      <div class="substep-text">
+        <strong>Créer vos produits dans Stripe</strong>
+        Products → Add product. Créez : "Premium" (19,99€/mois), "Pro" (100€/mois), et chaque module à la carte.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">3️⃣</span>
+      <div class="substep-text">
+        <strong>Récupérer vos clés API Stripe</strong>
+        Developers → API Keys. Copiez la "Publishable key" (pk_live_...) et la "Secret key" (sk_live_...). Ajoutez-les dans Vercel.
+      </div>
+    </div>
+    <div class="substep">
+      <span class="substep-icon">4️⃣</span>
+      <div class="substep-text">
+        <strong>Configurer les Webhooks</strong>
+        Developers → Webhooks → Add endpoint. URL : https://votre-domaine.com/api/stripe-webhook. Sélectionnez les événements : checkout.session.completed, customer.subscription.updated.
+      </div>
+    </div>
+    <div class="tip"><span class="tip-icon">💡</span><span>Stripe vous vire automatiquement l'argent sur votre compte bancaire tous les 7 jours. Vous pouvez voir vos revenus en temps réel dans le dashboard Stripe.</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ÉTAPE 8 : GO LIVE -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">8</div>
+    <div class="step-info">
+      <div class="step-title">🚀 Mise en ligne finale</div>
+      <div class="step-desc">Les dernières vérifications avant de lancer.</div>
+      <span class="step-time">⏱ 20 minutes</span>
+    </div>
+  </div>
+  <div class="step-body">
+    <div class="substep">
+      <span class="substep-icon">✅</span>
+      <div class="substep-text">
+        <strong>Checklist finale</strong>
+        Cochez chaque point avant de lancer publiquement.
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:10px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> Votre site s'affiche sur votre domaine personnalisé</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> Le HTTPS (cadenas vert) est actif</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> L'assistant IA répond dans le média</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> La connexion Google fonctionne</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> Le paiement Stripe fonctionne (mode test)</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> SkyLens affiche le globe 3D</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> Le site fonctionne sur mobile</label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;"><input type="checkbox" style="width:16px;height:16px;accent-color:var(--cyan);"> Vous pouvez accéder au dashboard admin</label>
+      </div>
+    </div>
+    <div class="success"><span>🎉</span><span>Tous les éléments cochés ? Votre plateforme est prête ! Partagez votre URL et regardez les utilisateurs affluer.</span></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SUPPORT -->
+<h2 style="font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:8px;">🆘 Support — Résolution de problèmes</h2>
+<p style="color:var(--dim);font-size:14px;margin-bottom:32px;">Si quelque chose ne fonctionne pas, cherchez votre problème ici.</p>
+
+<div class="support-grid">
+  <div class="support-card">
+    <div class="support-card-title">⚠️ Le site ne se charge pas</div>
+    <div class="support-problem">Vous voyez une erreur 404 ou page blanche.</div>
+    <div class="support-solution">✓ Vérifiez que vos fichiers sont bien dans GitHub. Allez dans Vercel → votre projet → Deployments et vérifiez que le dernier déploiement est "Ready".</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ Le domaine ne fonctionne pas</div>
+    <div class="support-problem">Votre domaine personnalisé affiche une erreur.</div>
+    <div class="support-solution">✓ La propagation DNS peut prendre jusqu'à 48h. Attendez et réessayez. Vérifiez dans Vercel → Domains que le statut est "Valid".</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ L'IA ne répond pas</div>
+    <div class="support-problem">L'assistant IA ne génère pas de réponses.</div>
+    <div class="support-solution">✓ Vérifiez votre clé API Anthropic dans Vercel → Environment Variables. Assurez-vous d'avoir du crédit sur console.anthropic.com.</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ La connexion Google échoue</div>
+    <div class="support-problem">Le bouton "Continuer avec Google" ne fonctionne pas.</div>
+    <div class="support-solution">✓ Dans Supabase → Authentication → Google, vérifiez que l'URL de redirection correspond exactement à votre domaine Vercel.</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ Le paiement Stripe échoue</div>
+    <div class="support-problem">Les utilisateurs ne peuvent pas payer.</div>
+    <div class="support-solution">✓ Vérifiez que vous êtes en mode "Live" dans Stripe (pas "Test"). Assurez-vous que votre identité est vérifiée dans Stripe.</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ SkyLens ne montre pas les avions</div>
+    <div class="support-problem">Le globe 3D est vide ou ne charge pas les données.</div>
+    <div class="support-solution">✓ Vérifiez vos identifiants OpenSky dans Vercel. L'API OpenSky a une limite de requêtes — attendez 10 secondes entre les actualisations.</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ Les emails n'arrivent pas</div>
+    <div class="support-problem">Les newsletters et notifications ne sont pas envoyées.</div>
+    <div class="support-solution">✓ Dans Resend, vérifiez que votre domaine d'envoi est validé. Ajoutez les enregistrements DNS SPF et DKIM dans Namecheap.</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ Site lent ou saturé</div>
+    <div class="support-problem">Le site rame avec beaucoup d'utilisateurs.</div>
+    <div class="support-solution">✓ Activez Cloudflare (gratuit) devant votre domaine. Il agit comme un bouclier anti-DDoS et met en cache votre site dans le monde entier.</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ Je ne peux pas accéder à l'admin</div>
+    <div class="support-problem">Le dashboard admin n'est pas accessible.</div>
+    <div class="support-solution">✓ Vérifiez que votre email dans ADMIN_EMAIL (Vercel) correspond exactement à votre email Google de connexion. Sensible à la casse.</div>
+  </div>
+  <div class="support-card">
+    <div class="support-card-title">⚠️ Erreur 500 serveur</div>
+    <div class="support-problem">Erreur interne du serveur.</div>
+    <div class="support-solution">✓ Dans Vercel → votre projet → Logs, regardez les erreurs en rouge. Copiez le message d'erreur et recherchez-le sur Google ou contactez le support Vercel.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- COÛTS RÉCAPITULATIFS -->
+<h2 style="font-size:28px;font-weight:800;letter-spacing:-0.02em;margin-bottom:24px;">💰 Récapitulatif des coûts</h2>
+<table class="cost-table">
+  <tr><th>Service</th><th>Plan</th><th>Coût mensuel</th></tr>
+  <tr><td>Vercel (hébergement)</td><td>Hobby (gratuit)</td><td class="cost-free">0€</td></tr>
+  <tr><td>Supabase (base de données)</td><td>Free tier</td><td class="cost-free">0€</td></tr>
+  <tr><td>GitHub (code)</td><td>Free</td><td class="cost-free">0€</td></tr>
+  <tr><td>Resend (emails)</td><td>Free (3000 emails/mois)</td><td class="cost-free">0€</td></tr>
+  <tr><td>OpenSky (données avions)</td><td>Gratuit</td><td class="cost-free">0€</td></tr>
+  <tr><td>Cloudflare (sécurité)</td><td>Free</td><td class="cost-free">0€</td></tr>
+  <tr><td>Anthropic Claude API</td><td>Pay as you go</td><td class="cost-paid">5-30€ selon usage</td></tr>
+  <tr><td>Nom de domaine</td><td>1 an</td><td class="cost-paid">~1€/mois</td></tr>
+  <tr><td>Stripe</td><td>% sur transactions</td><td class="cost-paid">1,4% + 0,25€/transaction</td></tr>
+  <tr><td style="font-weight:700;">TOTAL ESTIMÉ</td><td></td><td class="cost-paid" style="font-size:16px;font-weight:800;">~7-32€/mois</td></tr>
+</table>
+
+<div class="tip" style="margin-top:24px;"><span class="tip-icon">💡</span><span><strong>Rentabilité :</strong> Avec seulement 2 abonnés Premium (19,99€) ou 1 abonné Pro (100€), vous couvrez tous vos coûts. Dès 10 abonnés Premium, vous générez un bénéfice net de ~170€/mois.</span></div>
+
+<hr class="divider">
+
+<div style="text-align:center;padding:40px 0;">
+  <div style="font-size:40px;margin-bottom:16px;">🎉</div>
+  <h2 style="font-size:28px;font-weight:800;margin-bottom:12px;">Votre plateforme est prête !</h2>
+  <p style="color:var(--dim);max-width:500px;margin:0 auto 32px;line-height:1.7;">Le Média Intelligent + SkyLens tournent maintenant de façon 100% autonome. L'IA génère du contenu, vérifie les informations, gère les utilisateurs et se met à jour seule.</p>
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:8px;padding:16px 32px;background:var(--cyan);color:var(--black);border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">Voir votre plateforme →</a>
+</div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const block = btn.parentElement;
+  const text = block.innerText.replace('Copier','').replace('Copié !','').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copié !';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = 'Copier'; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
