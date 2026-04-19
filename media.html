@@ -1265,12 +1265,7 @@ async function sendAiMessage() {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `Tu es l'assistant IA du Média Intelligent. Tu aides les utilisateurs à comprendre l'actualité mondiale. Tu es factuel, neutre, et tu mentionnes toujours tes sources quand tu peux. Tu répondras en moins de 100 mots, de manière claire et concise. Tu luttes activement contre la désinformation. Tu réponds dans la langue de l'utilisateur.`,
-        messages: [{ role: 'user', content: msg }]
-      })
+      body: JSON.stringify({ message: msg })
     });
     const data = await response.json();
     const reply = data.content?.[0]?.text || "Je traite votre demande...";
